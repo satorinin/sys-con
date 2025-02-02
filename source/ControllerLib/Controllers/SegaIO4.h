@@ -4,12 +4,8 @@
 #include <memory>
 
 _PACKED(struct SegaIO4ButtonData {
-    // byte0
-    uint8_t type;
-    // byte1-27
-    uint8_t pad[27];
-    // byte28
-    uint8_t pad0;
+    // byte0-28
+    uint8_t pad[29];
 
     // byte29
     bool button2 : 1;  // button 2
@@ -40,7 +36,7 @@ _PACKED(struct SegaIO4ButtonData {
     uint8_t HOME : 1;
 
     // byte33-63
-    uint8_t pad3[30];
+    uint8_t pad3[27];
 });
 
 
