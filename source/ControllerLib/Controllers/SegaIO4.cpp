@@ -62,5 +62,6 @@ ControllerResult SegaIO4::ParseData(uint8_t *buffer, size_t size, RawInputData *
          Special case for generic HID, input_idx might be bigger than 0 in case of multiple interfaces.
          If this is the case we expect to have 1 input per interface, thus we don't want to overwrite the input index.
     */
+   
     return CONTROLLER_STATUS_SUCCESS;
 }
