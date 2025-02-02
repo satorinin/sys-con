@@ -90,6 +90,16 @@ ControllerResult SegaIO4::ParseData(uint8_t *buffer, size_t size, RawInputData *
     rawData->analog[ControllerAnalogType_Rz] = BaseController::Normalize(buttonData->Rz, 0, 255);
     */
 
+    rawData->buttons[11] = 0;
+    rawData->buttons[13] = 0;
+
+    rawData->analog[ControllerAnalogType_Rx] = 0;
+    rawData->analog[ControllerAnalogType_Ry] = 0;
+    rawData->analog[ControllerAnalogType_X] = 0;
+    rawData->analog[ControllerAnalogType_Y] = 0;
+    rawData->analog[ControllerAnalogType_Z] = 0;
+    rawData->analog[ControllerAnalogType_Rz] = 0;
+
     rawData->buttons[DPAD_UP_BUTTON_ID] = buttonData->dpad_up;
     rawData->buttons[DPAD_RIGHT_BUTTON_ID] = buttonData->dpad_right;
     rawData->buttons[DPAD_DOWN_BUTTON_ID] = buttonData->dpad_down;
