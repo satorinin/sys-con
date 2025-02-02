@@ -63,8 +63,6 @@ ControllerResult SegaIO4::ParseData(uint8_t *buffer, size_t size, RawInputData *
          If this is the case we expect to have 1 input per interface, thus we don't want to overwrite the input index.
     */
     (void)input_idx;
-    printf("fuck this shit");
-    printf("%d", sizeof(SegaIO4ButtonData));
     SegaIO4ButtonData *buttonData = reinterpret_cast<SegaIO4ButtonData *>(buffer);
 
     if (size < sizeof(SegaIO4ButtonData))
