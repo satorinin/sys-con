@@ -1,5 +1,4 @@
 #include "Controllers/SegaIO4.h"
-#include "HIDReportDescriptor.h"
 #include <string.h>
 
 // https://www.usb.org/sites/default/files/documents/hid1_11.pdf  p55
@@ -40,9 +39,6 @@ ControllerResult SegaIO4::Initialize()
 
     Log(LogLevelTrace, "SegaIO4[%04x-%04x] Got descriptor for interface %d", m_device->GetVendor(), m_device->GetProduct(), m_interfaces[0]->GetDescriptor()->bInterfaceNumber);
     LogBuffer(LogLevelTrace, buffer, size);
-
-    Log(LogLevelDebug, "SegaIO4[%04x-%04x] Parsing descriptor ...", m_device->GetVendor(), m_device->GetProduct());
-    std::shared_ptr<HIDReportDescriptor> descriptor = std::make_shared<HIDReportDescriptor>(buffer, size);
 
     Log(LogLevelDebug, "SegaIO4[%04x-%04x] Looking for joystick/gamepad profile ...", m_device->GetVendor(), m_device->GetProduct());
 
