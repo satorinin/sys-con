@@ -7,3 +7,4 @@
 #include "Controllers/Dualshock3Controller.h"
 #include "Controllers/SwitchController.h"
 #include "Controllers/GenericHIDController.h"
+#include "Controllers/SegaIO4.h"

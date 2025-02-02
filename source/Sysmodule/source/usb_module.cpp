@@ -141,6 +141,12 @@ namespace syscon::usb
                             syscon::logger::LogInfo("Initializing Switch (Interface count: %d) ...", total_entries);
                             controllers::Insert(std::make_unique<SwitchController>(std::make_unique<SwitchUSBDevice>(interfaces, total_entries), config, std::make_unique<syscon::logger::Logger>()));
                         }
+                        else if (config.driver == "segaio4")
+                        {
+                            /* For now if Generic controller expose more than 1 interface, we will create as many SegaIO4 as we have interfaces */
+                            syscon::logger::LogInfo("Initializing Sega IO4 controller (Interface count: %d) ...", total_entries);
+                            controllers::Insert(std::make_unique<SegaIO4>(std::make_unique<SwitchUSBDevice>(interfaces, 1), config, std::make_unique<syscon::logger::Logger>()));
+                        }
                         else
                         {
                             /* For now if Generic controller expose more than 1 interface, we will create as many GenericHIDController as we have interfaces */
