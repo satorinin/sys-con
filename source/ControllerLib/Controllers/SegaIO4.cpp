@@ -62,6 +62,42 @@ ControllerResult SegaIO4::ParseData(uint8_t *buffer, size_t size, RawInputData *
          Special case for generic HID, input_idx might be bigger than 0 in case of multiple interfaces.
          If this is the case we expect to have 1 input per interface, thus we don't want to overwrite the input index.
     */
-   
+    (void)input_idx;
+    SegaIO4ButtonData *buttonData = reinterpret_cast<SegaIO4ButtonData*>(buffer);
+
+    if (size < sizeof(SegaIO4ButtonData))
+        return CONTROLLER_STATUS_UNEXPECTED_DATA;
+
+    rawData->buttons[1] = buttonData->button1;
+    rawData->buttons[2] = buttonData->button2;
+    rawData->buttons[3] = buttonData->button3;
+    rawData->buttons[4] = buttonData->button4;
+    rawData->buttons[5] = buttonData->button5;
+    rawData->buttons[6] = buttonData->button6;
+    rawData->buttons[7] = buttonData->button7;
+    rawData->buttons[8] = buttonData->button8;
+
+    rawData->buttons[9] = buttonData->START;
+    rawData->buttons[10] = buttonData->HOME;
+
+    /*
+    rawData->buttons[9] = buttonData->button9;
+    rawData->buttons[10] = buttonData->button10;
+    rawData->buttons[11] = buttonData->button11;
+    rawData->buttons[13] = buttonData->button13;
+
+    rawData->analog[ControllerAnalogType_Rx] = BaseController::Normalize(buttonData->Rx, 0, 255);
+    rawData->analog[ControllerAnalogType_Ry] = BaseController::Normalize(buttonData->Ry, 0, 255);
+    rawData->analog[ControllerAnalogType_X] = BaseController::Normalize(buttonData->X, 0, 255);
+    rawData->analog[ControllerAnalogType_Y] = BaseController::Normalize(buttonData->Y, 0, 255);
+    rawData->analog[ControllerAnalogType_Z] = BaseController::Normalize(buttonData->Z, 0, 255);
+    rawData->analog[ControllerAnalogType_Rz] = BaseController::Normalize(buttonData->Rz, 0, 255);
+    */
+
+    rawData->buttons[DPAD_UP_BUTTON_ID] = buttonData->dpad_up;
+    rawData->buttons[DPAD_RIGHT_BUTTON_ID] = buttonData->dpad_right;
+    rawData->buttons[DPAD_DOWN_BUTTON_ID] = buttonData->dpad_down;
+    rawData->buttons[DPAD_LEFT_BUTTON_ID] = buttonData->dpad_left;
+
     return CONTROLLER_STATUS_SUCCESS;
 }
