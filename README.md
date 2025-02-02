@@ -273,7 +273,7 @@ Open MSYS console, move to the project root directory and use one of the followi
 - `make -j8`: Build the project
 - `make clean`: Cleans the project files (but not the dependencies).
 - `make mrproper`: Cleans the project files and the dependencies.
-- `syscon.sh build`: Build and package sys-con (Similar to github release packages)
+- `sys-con.sh build`: Build and package sys-con (Similar to github release packages)
 
 Output folder will be there: `out/`
 For an in-depth explanation of how sys-con works, see [here](source).
