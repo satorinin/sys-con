@@ -1,4 +1,4 @@
-.PHONY: all build clean mrproper dist distclean
+.PHONY: all build clean mrproper dist distclean test
 
 GIT_TAG := $(shell git describe --tags `git rev-list --tags --max-count=1`)
 GIT_TAG_COMMIT_COUNT := +$(shell git rev-list  `git rev-list --tags --no-walk --max-count=1`..HEAD --count)
@@ -10,6 +10,7 @@ ATMOSPHERE_VERSION	?= 1.7.x
 SOURCE_DIR			:= source
 OUT_DIR				:= out
 DIST_DIR			:= dist
+BUILD_DIR           := build
 OUT_ZIP				:= sys-con-$(GIT_TAG)$(GIT_TAG_COMMIT_COUNT).zip
 
 all: build
@@ -25,6 +26,11 @@ all: build
 
 build:
 	$(MAKE) -C $(SOURCE_DIR)
+
+test:
+	cmake -S . -B $(BUILD_DIR)
+	cmake --build $(BUILD_DIR)
+	cd $(BUILD_DIR)/tests && ctest
 
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
