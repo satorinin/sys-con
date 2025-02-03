@@ -15,22 +15,22 @@ _PACKED(struct SegaIO4ButtonData {
 
     bool dpad_down : 1;
     bool dpad_up : 1;
-    bool binpad0;
+    bool binpad0 : 1;
     bool START : 1; // start
 
     // byte30
-    bool binpad1;
-    bool binpad2;
+    bool binpad1 : 1;
+    bool binpad2 : 1;
     bool button8 : 1;
     bool button7 : 1; 
 
-    bool button6 : 1; // triangle
-    bool button5 : 1; // circle
-    bool button4 : 1; // cross
-    bool button3 : 1; // square
+    bool button6 : 1;
+    bool button5 : 1;
+    bool button4 : 1;
+    bool button3 : 1;
 
     // byte31
-    uint8_t pad2;
+    uint8_t pad2 : 1;
 
     // byte32
     uint8_t HOME : 1;
