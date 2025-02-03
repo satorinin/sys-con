@@ -33,7 +33,17 @@ _PACKED(struct SegaIO4ButtonData {
     uint8_t pad2 : 1;
 
     // byte32
-    uint8_t HOME : 1;
+    bool dummy0 : 1;
+    bool dummy1: 1;
+    bool dummy2: 1;
+    bool dummy3: 1; 
+
+    bool HOME : 1;
+    bool dummy4: 1;
+    bool dummy5: 1;
+    bool dummy6: 1;
+
+
 
     // byte33-63
     uint8_t pad3[27];

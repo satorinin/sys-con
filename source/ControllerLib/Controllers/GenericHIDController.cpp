@@ -1,6 +1,7 @@
 #include "Controllers/GenericHIDController.h"
 #include "HIDReportDescriptor.h"
 #include "HIDJoystick.h"
+#include "Controllers/SegaIO4.h"
 #include <string.h>
 
 // https://www.usb.org/sites/default/files/documents/hid1_11.pdf  p55
@@ -55,7 +56,6 @@ ControllerResult GenericHIDController::Initialize()
         return CONTROLLER_STATUS_HID_IS_NOT_JOYSTICK;
     }
 
-    Log(LogLevelInfo, "GenericHIDController[%04x-%04x] USB joystick successfully opened (%d inputs detected) !", m_device->GetVendor(), m_device->GetProduct(), GetInputCount());
 
     return CONTROLLER_STATUS_SUCCESS;
 }
@@ -67,43 +67,32 @@ uint16_t GenericHIDController::GetInputCount()
 
 ControllerResult GenericHIDController::ParseData(uint8_t *buffer, size_t size, RawInputData *rawData, uint16_t *input_idx)
 {
-    HIDJoystickData joystick_data;
-
-    if (!m_joystick->parseData(buffer, (uint16_t)size, &joystick_data))
-    {
-        Log(LogLevelError, "GenericHIDController[%04x-%04x] Failed to parse input data (size=%d)", m_device->GetVendor(), m_device->GetProduct(), size);
-        return CONTROLLER_STATUS_UNEXPECTED_DATA;
-    }
-
-    if (joystick_data.index >= GetInputCount())
-    {
-        Log(LogLevelError, "GenericHIDController[%04x-%04x] Unexpected input index %d/%d", m_device->GetVendor(), m_device->GetProduct(), joystick_data.index, GetInputCount());
-        return CONTROLLER_STATUS_UNEXPECTED_DATA;
-    }
-
     /*
          Special case for generic HID, input_idx might be bigger than 0 in case of multiple interfaces.
          If this is the case we expect to have 1 input per interface, thus we don't want to overwrite the input index.
     */
-    if (input_idx != NULL && *input_idx == 0)
-        *input_idx = joystick_data.index;
+    (void)input_idx;
+    SegaIO4ButtonData *buttonData = reinterpret_cast<SegaIO4ButtonData *>(buffer);
 
-    for (int i = 0; i < MAX_CONTROLLER_BUTTONS; i++)
-        rawData->buttons[i] = joystick_data.buttons[i];
+    if (size < sizeof(SegaIO4ButtonData))
+        return CONTROLLER_STATUS_UNEXPECTED_DATA;
 
-    rawData->analog[ControllerAnalogType_Rx] = BaseController::Normalize(joystick_data.Rx, -32768, 32767);
-    rawData->analog[ControllerAnalogType_Ry] = BaseController::Normalize(joystick_data.Ry, -32768, 32767);
-    rawData->analog[ControllerAnalogType_X] = BaseController::Normalize(joystick_data.X, -32768, 32767);
-    rawData->analog[ControllerAnalogType_Y] = BaseController::Normalize(joystick_data.Y, -32768, 32767);
-    rawData->analog[ControllerAnalogType_Z] = BaseController::Normalize(joystick_data.Z, -32768, 32767);
-    rawData->analog[ControllerAnalogType_Rz] = BaseController::Normalize(joystick_data.Rz, -32768, 32767);
-    rawData->analog[ControllerAnalogType_Slider] = BaseController::Normalize(joystick_data.Slider, -32768, 32767);
-    rawData->analog[ControllerAnalogType_Dial] = BaseController::Normalize(joystick_data.Dial, -32768, 32767);
+    rawData->buttons[1] = buttonData->button1;
+    rawData->buttons[2] = buttonData->button2;
+    rawData->buttons[3] = buttonData->button3;
+    rawData->buttons[4] = buttonData->button4;
+    rawData->buttons[5] = buttonData->button5;
+    rawData->buttons[6] = buttonData->button6;
+    rawData->buttons[7] = buttonData->button7;
+    rawData->buttons[8] = buttonData->button8;
 
-    rawData->buttons[DPAD_UP_BUTTON_ID] = joystick_data.hat_switch == HIDJoystickHatSwitch::UP || joystick_data.hat_switch == HIDJoystickHatSwitch::UP_RIGHT || joystick_data.hat_switch == HIDJoystickHatSwitch::UP_LEFT;
-    rawData->buttons[DPAD_RIGHT_BUTTON_ID] = joystick_data.hat_switch == HIDJoystickHatSwitch::RIGHT || joystick_data.hat_switch == HIDJoystickHatSwitch::UP_RIGHT || joystick_data.hat_switch == HIDJoystickHatSwitch::DOWN_RIGHT;
-    rawData->buttons[DPAD_DOWN_BUTTON_ID] = joystick_data.hat_switch == HIDJoystickHatSwitch::DOWN || joystick_data.hat_switch == HIDJoystickHatSwitch::DOWN_RIGHT || joystick_data.hat_switch == HIDJoystickHatSwitch::DOWN_LEFT;
-    rawData->buttons[DPAD_LEFT_BUTTON_ID] = joystick_data.hat_switch == HIDJoystickHatSwitch::LEFT || joystick_data.hat_switch == HIDJoystickHatSwitch::UP_LEFT || joystick_data.hat_switch == HIDJoystickHatSwitch::DOWN_LEFT;
+    rawData->buttons[9] = buttonData->START;
+    rawData->buttons[10] = buttonData->HOME;
+
+    rawData->buttons[DPAD_UP_BUTTON_ID] = buttonData->dpad_up;
+    rawData->buttons[DPAD_RIGHT_BUTTON_ID] = buttonData->dpad_right;
+    rawData->buttons[DPAD_DOWN_BUTTON_ID] = buttonData->dpad_down;
+    rawData->buttons[DPAD_LEFT_BUTTON_ID] = buttonData->dpad_left;
 
     return CONTROLLER_STATUS_SUCCESS;
 }
