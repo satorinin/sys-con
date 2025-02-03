@@ -42,8 +42,6 @@ ControllerResult SegaIO4::Initialize()
 
     Log(LogLevelDebug, "SegaIO4[%04x-%04x] Looking for joystick/gamepad profile ...", m_device->GetVendor(), m_device->GetProduct());
 
-    Log(LogLevelInfo, "SegaIO4[%04x-%04x] USB joystick successfully opened (%d inputs detected) !", m_device->GetVendor(), m_device->GetProduct(), GetInputCount());
-
     return CONTROLLER_STATUS_SUCCESS;
 }
 
