@@ -30,20 +30,28 @@ _PACKED(struct SegaIO4ButtonData {
     bool button3 : 1;
 
     // byte31
-    uint8_t pad2 : 1;
+    //uint8_t pad2: 1;
+    bool b0: 1;
+    bool b1: 1;
+    bool b2: 1;
+    bool b3: 1;
+    bool b4: 1;
+    bool b5: 1;
+    bool b6: 1;
+    bool b7: 1;
 
     // byte32
-    bool dummy0 : 1;
+
+    // byte32
+    bool dummy0: 1;
     bool dummy1: 1;
     bool dummy2: 1;
     bool dummy3: 1; 
 
-    bool HOME : 1;
+    bool HOME: 1;
     bool dummy4: 1;
     bool dummy5: 1;
     bool dummy6: 1;
-
-
 
     // byte33-63
     uint8_t pad3[27];
