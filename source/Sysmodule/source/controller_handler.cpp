@@ -20,6 +20,11 @@ namespace syscon::controllers
 
     } // namespace
 
+    int NumControllers()
+    {
+        return controllerHandlers.size();
+    }
+
     bool IsAtControllerLimit()
     {
         std::lock_guard<std::mutex> scoped_lock(controllerMutex);

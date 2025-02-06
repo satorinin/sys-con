@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Controllers/SegaIO4.h"
+#include "Controllers/GenericHIDController.h"
 #include "mocks/Device.h"
 #include "mocks/Logger.h"
 
@@ -8,7 +8,7 @@ TEST(Controller, test_pras_dpad_right)
     ControllerConfig config;
     RawInputData rawData;
     uint16_t input_idx = 0;
-    SegaIO4 controller(std::make_unique<MockDevice>(), config, std::make_unique<MockLogger>());
+    GenericHIDController controller(std::make_unique<MockDevice>(), config, std::make_unique<MockLogger>());
 
     {
     uint8_t buffer[64] = {0x01, 0x20, 0x80, 0x38, 0x8A, 0x34, 0x83, 0x10, 0x88, 0x88, 0x83, 0x40, 0x89, 0x10, 0x8A, 0x10,

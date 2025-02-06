@@ -4,6 +4,7 @@
 
 namespace syscon::controllers
 {
+    int NumControllers();
     bool IsAtControllerLimit();
 
     Result Insert(std::unique_ptr<IController> &&controllerPtr);

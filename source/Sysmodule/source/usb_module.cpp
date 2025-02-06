@@ -60,6 +60,7 @@ namespace syscon::usb
                 if (R_SUCCEEDED(rc) || R_VALUE(rc) == KERNELRESULT(TimedOut))
                 {
                     syscon::logger::LogDebug("New USB device detected (Or polling timeout), checking for controllers ...");
+                    syscon::logger::LogInfo("total number of controllers: %d ...", controllers::NumControllers());
 
                     /*
                         For unknown reason we have to keep this lock in order to lock the usb stacks during the controller initialization
@@ -75,7 +76,8 @@ namespace syscon::usb
                         (total_interfaces_xbox360w = QueryAvailableInterfacesByClassSubClassProtocol(interfaces, sizeof(interfaces), USB_CLASS_VENDOR_SPEC, 0x5D, 0x81)) > 0 || // XBOX360 Wireless
                         (total_interfaces_xboxone = QueryAvailableInterfacesByClassSubClassProtocol(interfaces, sizeof(interfaces), USB_CLASS_VENDOR_SPEC, 0x47, 0xD0)) > 0 ||  // XBOX ONE
                         (total_interfaces_xbox = QueryAvailableInterfacesByClassSubClassProtocol(interfaces, sizeof(interfaces), 0x58, 0x42, 0x00)) > 0 ||                      // XBOX Original
-                        (total_interfaces_hid = QueryAvailableInterfacesByClass(interfaces, sizeof(interfaces), USB_CLASS_HID)) > 0                                             // Generic HID
+                        //(total_interfaces_hid = QueryAvailableInterfacesByClass(interfaces, sizeof(interfaces), USB_CLASS_HID)) > 0                                             // Generic HID
+                        (total_interfaces_hid = QueryAvailableInterfacesByClassSubClassProtocol(interfaces, sizeof(interfaces), USB_CLASS_HID, 0x0, 0x0)) > 0                   // Generic HID
                     )
                     {
                         timeoutNs = MS_TO_NS(1); // Everytime we find a controller we reset the timeout to loop again on next controllers
@@ -106,6 +108,8 @@ namespace syscon::usb
                             default_profile = "xboxone";
                         else if (total_interfaces_xbox > 0)
                             default_profile = "xbox";
+                        else if (total_interfaces_hid > 0)
+                            default_profile = "generic";
 
                         ControllerConfig config;
                         ::syscon::config::LoadControllerConfig(&config, interface->device_desc.idVendor, interface->device_desc.idProduct, g_auto_add_controller, default_profile);
@@ -150,7 +154,7 @@ namespace syscon::usb
                         {
                             /* For now if Generic controller expose more than 1 interface, we will create as many GenericHIDController as we have interfaces */
                             syscon::logger::LogInfo("Initializing Generic controller (Interface count: %d) ...", total_entries);
-                            controllers::Insert(std::make_unique<GenericHIDController>(std::make_unique<SwitchUSBDevice>(interfaces, 1), config, std::make_unique<syscon::logger::Logger>()));
+                            controllers::Insert(std::make_unique<GenericHIDController>(std::make_unique<SwitchUSBDevice>(interfaces, total_entries), config, std::make_unique<syscon::logger::Logger>()));
                         }
                     }
                     else
@@ -158,6 +162,7 @@ namespace syscon::usb
                         syscon::logger::LogDebug("No HID or XBOX interfaces found !");
                         timeoutNs = UINT64_MAX; // As soon as no controller is found, we wait for the next event
                     }
+
                 }
             } while (is_usb_event_thread_running);
         }
